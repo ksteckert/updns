@@ -1,14 +1,15 @@
-const fs = require('fs')
 const path = require('path')
-const updns = require('updns').createServer(53, '127.0.0.3')
+const fs = require('fs')
 
-var hostsFile = path.resolve('./hosts')
+var {bind = '', hosts:hostsFile = path.resolve('./hosts')} = require('minimist')(process.argv.slice(2))
+var binding = bind.split(':').filter(Boolean)
+
+const updns = require('updns').createServer(binding[1], binding[0])
 var hosts
 
 function updateHosts () {
   let regs = fs.readFileSync(hostsFile, 'utf8')
   hosts = regs.split("\n").filter(Boolean).map(r => new RegExp(r, 'gi'))
-  // console.log(hosts)
 }
 
 updateHosts()
