@@ -9,7 +9,15 @@ var hosts
 
 function updateHosts () {
   let regs = fs.readFileSync(hostsFile, 'utf8')
-  hosts = regs.split("\n").filter(Boolean).map(r => new RegExp(r, 'gi'))
+  hosts = regs.split("\n").filter(Boolean).map(r => {
+    let rowArray = r.trim().replace(/\s\s+/g, ' ').split(' ')
+    return {
+      pattern: new RegExp(rowArray[0], 'gi'),
+      host: rowArray[1]
+    }
+  })
+  console.log(hosts)
+  // hosts = regs.split("\n").filter(Boolean).map(r => new RegExp(r, 'gi'))
 }
 
 updateHosts()
@@ -24,14 +32,17 @@ updns.on('listening', server => {
 })
 
 updns.on('message', (domain, send, proxy) => {
-  let match = false
+  let urlHost = null
 
-  hosts.forEach(h => {
-    if (domain.match(h)) match = true
+  hosts.some(r => {
+    if (domain.match(r.pattern)) {
+      urlHost = r.host
+      return true
+    }
   })
 
-  if(match){
-    send('127.0.0.1')
+  if(urlHost){
+    send(urlHost)
   }else {
     proxy('8.8.8.8')
   }

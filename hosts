@@ -1,0 +1,6 @@
+dev\.[\w\d]*analytics\.com          127.0.0.1
+dev\.analyticowl\.com               127.0.0.1
+sup\.[\w\d]*analytics\.com          127.0.0.2
+sup\.analyticowl\.com               127.0.0.2
+dev\.analyticowls\.(com|net|org)    127.0.0.1
+(.*\.)?hoo+ts?\.(com|org)           127.0.0.1
